@@ -1,4 +1,5 @@
 from flask import Flask
+import os
 app = Flask(__name__)
 
 @app.route('/')
@@ -19,8 +20,8 @@ def grabZet(filename):
 
 
 def parseFile(file):
-    path = "/home/jweezy/Documents/Code/zg-tutorial/zettels/rheingold-examples/"
-    info = open(path+file, "r")
+    path = "/home/jweezy/Documents/Code/zg-tutorial/zettels/"
+    info = open(getFile(file,path), "r")
     files = {file: ''}
     dict = {"title":'', "summary": "", "url":'', "note":"", "tags":"" }
     for i in info:
@@ -39,3 +40,13 @@ def parseFile(file):
             dict.update({currentTag: dict.get(currentTag)+ "\n" + i})
     info.close()
     return dict
+
+
+def getFile(file,path):
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        for folder in dirnames:
+            for (dirpath, dirnames, files) in os.walk(path+folder):
+                
+                for f in files:
+                    if f == file:
+                        return path+folder+'/'+file
