@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 import os
+import subprocess
 app = Flask(__name__)
 
 @app.route('/')
@@ -42,6 +43,14 @@ def changeZet():
         f.update({'url': url})
     writeFile(getFile(file,path), f)
 
+    return str(parseFile(file))
+@app.route('/update', methods=['GET'])
+def updateZet():
+    file = request.args.get('file')
+    catagory = request.args.get('cata')
+    val = request.args.get('val')
+    updateAppend(file,catagory,val)
+    
     return str(parseFile(file))
 
 
@@ -89,3 +98,5 @@ def getFile(file,path):
                 for f in files:
                     if f == file:
                         return path+folder+'/'+file
+def updateAppend(fileName, catagory, val):
+    subprocess.Popen('zettel --append-tags "{0}" --save {1}'.format(val,fileName),shell=True)
